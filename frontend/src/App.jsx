@@ -7,12 +7,13 @@ import "./App.css";
 import TasksFilter from "./components/TasksFilter";
 
 function App() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [tasks, setTasks] = useState([]);
 
   //api from backend
   useEffect(() => {
-    fetch("http://localhost:3000/api/todos")
+    fetch(`${API_URL}/api/todos`)
       .then((response) => response.json())
       .then((data) => {
         setTasks(data);
@@ -23,7 +24,7 @@ function App() {
   }, []);
 
   const toggleStatus = (id) => {
-    fetch(`http://localhost:3000/api/todos/${id}/toggle`, {
+    fetch(`${API_URL}/api/todos/${id}/toggle`, {
       method: "PATCH",
     })
       .then((response) => response.json())
@@ -40,7 +41,7 @@ function App() {
   };
 
   const deleteTask = (id) => {
-    fetch(`http://localhost:3000/api/todos/${id}`, {
+    fetch(`${API_URL}/api/todos/${id}`, {
       method: "DELETE",
     })
       .then((response) => response.json())
@@ -55,7 +56,7 @@ function App() {
   };
 
   const updateTask = (id, newTitle) => {
-    fetch(`http://localhost:3000/api/todos/${id}`, {
+    fetch(`${API_URL}/api/todos/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -84,7 +85,7 @@ function App() {
   };
 
   const addTask = (text) => {
-    fetch("http://localhost:3000/api/todos", {
+    fetch(`${API_URL}/api/todos`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -116,7 +117,7 @@ function App() {
 
     Promise.all(
       completedTasks.map((task) =>
-        fetch(`http://localhost:3000/api/todos/${task._id}`, {
+        fetch(`${API_URL}/api/todos/${task._id}`, {
           method: "DELETE",
         }),
       ),
