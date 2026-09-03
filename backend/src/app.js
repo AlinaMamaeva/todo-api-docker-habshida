@@ -25,7 +25,7 @@ app.get("/health", (req, res) => {
 
 app.use("/api", todoRoutes);
 app.use(errorHandler);
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 connectDB().then(() => {
   app.listen(PORT, () => {
