@@ -30,6 +30,10 @@ app.set("io", io);
 app.use(express.json());
 app.use(cors());
 
+// app.get("/docker-test", (req, res) => {
+//   res.json({ message: "Hot reload works!" });
+// });
+
 app.get("/health", (req, res) => {
   const connected = mongoose.connection.readyState === 1;
 

@@ -1,0 +1,10 @@
+services:
+  backend:
+    build: .
+    image: todo-api:2.0
+    container_name: todo-compose-backend
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: unless-stopped
