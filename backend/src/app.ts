@@ -53,3 +53,49 @@ connectDB().then(() => {
     console.log(`Server running on port ${PORT}`);
   });
 });
+
+//graceful shutdown
+let isShuttingDown = false;
+
+async function gracefulShutdown(signal: string) {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+
+  console.log(`${signal} received. Shutting down gracefully...`);
+
+  const forceShutdown = setTimeout(() => {
+    console.error("Shutdown timeout. Forcing exit.");
+    process.exit(1);
+  }, 10000);
+
+  forceShutdown.unref();
+
+  try {
+    await new Promise<void>((resolve, reject) => {
+      io.close((error?: Error) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve();
+        }
+      });
+    });
+
+    await mongoose.connection.close();
+
+    clearTimeout(forceShutdown);
+    console.log("Graceful shutdown completed.");
+    process.exit(0);
+  } catch (error) {
+    console.error("Error during shutdown:", error);
+    process.exit(1);
+  }
+}
+
+process.on("SIGTERM", () => {
+  void gracefulShutdown("SIGTERM");
+});
+
+process.on("SIGINT", () => {
+  void gracefulShutdown("SIGINT");
+});
